@@ -1,40 +1,36 @@
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
-from langchain_google_genai import google_genai
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 load_dotenv()
 
 
-def main():
+def main() -> None:
     print("Hello from langchain-course!")
-    information = """
-    Elon Reeve Musk FRS (/ˈiːlɒn/ EE-lon; born June 28, 1971) is a businessman, known for his leadership of Tesla, SpaceX, X (formerly Twitter), and the Department of Government Efficiency (DOGE). Musk has been the wealthiest person in the world since 2021; as of May 2025, Forbes estimates his net worth to be US$424.7 billion.
+    information = """ Iron Man (deutsch etwa „eiserner Mann“, „Eisen-Mann“, in den ersten deutschen Veröffentlichungen „Der Eiserne“) ist eine Comicfigur der Marvel Comics. Erschaffen wurde sie von Stan Lee und Larry Lieber sowie den Zeichnern Don Heck und Jack Kirby. Ihr erster Auftritt war in dem Comic Tales of Suspense #39 im März 1963. 1968 erhielt sie eine eigene Reihe mit dem Titel Iron Man, die bis 1996 fortgesetzt wurde. Iron Mans Rüstung ist rot-golden und mit modernster Technik ausgestattet, wie zum Beispiel Plasmastrahlen.Iron Man ist das Alter Ego des Multimilliardärs und genialen Erfinders Anthony Edward „Tony“ Stark. Dieser übernimmt den Familienbetrieb Stark Industries, nachdem seine Eltern bei einem Autounfall ums Leben gekommen sind. Stark Industries ist ein Technologie-Konzern, der unter anderem im Auftrag der US-Regierung Waffensysteme entwickelt. Während einer Vorstellung seiner Erfindungen, welche im Vietnamkrieg eingesetzt werden, wird Stark bei einer Bombenexplosion verletzt und von den Nordvietnamesen gefangen genommen. Drei Granatsplitter verletzen ihn sehr nahe an seinem Herzen. Der Warlord Wong-Chu verspricht die Freilassung, wenn Stark für die Nordvietnamesen arbeitet.
 
-Born to a wealthy family in Pretoria, South Africa, Musk emigrated in 1989 to Canada. He received bachelor's degrees from the University of Pennsylvania in 1997 before moving to California, United States, to pursue business ventures. In 1995, Musk co-founded the software company Zip2. Following its sale in 1999, he co-founded X.com, an online payment company that later merged to form PayPal, which was acquired by eBay in 2002. That year, Musk also became an American citizen.
+    Zusammen mit Ho Yinsen, einem ebenfalls in Gefangenschaft befindlichen Nobelpreisträger für Physik, entwickelt Stark seine erste Iron-Man-Rüstung (Mark One), ein schwer gepanzertes Exoskelett. Dieses gibt Stark einerseits große Kampfkraft, andererseits ist es für ihn überlebenswichtig, da es den Metallsplitter in seinem Körper durch einen eingebauten Elektromagneten zurückhält und es ihm erlaubt, aus dem Lager zu fliehen. Er wird von seinem Freund James Rhodes gerettet. Zurück in den Vereinigten Staaten, gibt Tony Stark Iron Man als seinen Bodyguard aus und lebt zwei Identitäten.
 
-In 2002, Musk founded the space technology company SpaceX, becoming its CEO and chief engineer; the company has since led innovations in reusable rockets and commercial spaceflight. Musk joined the automaker Tesla as an early investor in 2004 and became its CEO and product architect in 2008; it has since become a leader in electric vehicles. In 2015, he co-founded OpenAI to advance artificial intelligence (AI) research but later left; growing discontent with the organization's direction and their leadership in the AI boom in the 2020s led him to establish xAI. In 2022, he acquired the social network Twitter, implementing significant changes and rebranding it as X in 2023. His other businesses include the neurotechnology company Neuralink, which he co-founded in 2016, and the tunneling company the Boring Company, which he founded in 2017.
+    Während Iron Man in den ersten Jahren hauptsächlich gegen kommunistische Gegner, korrupte Geschäftskonkurrenten oder Terrororganisationen wie HYDRA und insbesondere A.I.M. (Advanced Idea Mechanic) kämpft, die an der Stark-Technologie und zumal an den Iron-Man-Rüstungen interessiert sind, zieht sich Stark aufgrund seiner Erfahrungen in Vietnam aus dem Waffengeschäft zurück und beginnt mit der Entwicklung des ARK-Reaktors als sauberer alternativer Energiequelle, um so Kriegen um knapper werdende Rohstoffe entgegenzuwirken. Er gründet verschiedene Wohltätigkeitsorganisationen wie die nach seiner Mutter benannte Maria-Stark-Stiftung. Seitdem gilt Tony Stark als Philanthrop. Iron Man ist ein Gründungsmitglied der Avengers (Rächer). Dieser Vereinigung von Superhelden stellt er über die Jahre unter anderem die Unterkunft, das Rächer-Hauptquartier, zur Verfügung.
 
-Musk was the largest donor in the 2024 U.S. presidential election, and is a supporter of global far-right figures, causes, and political parties. In early 2025, he served as senior advisor to United States president Donald Trump and as the de facto head of DOGE. After a public feud with Trump, Musk left the Trump administration and announced he was creating his own political party, the America Party.
+    Tony Stark ist ein technisch versierter und erfinderischer Geschäftsmann. Gleichzeitig hat er aber auch persönliche Probleme wie seinen anhaltenden Narzissmus und seinen Gottkomplex, zudem gesundheitliche wie eine Palladiumvergiftung durch den Ark-Reaktor in seiner Brust, der die Granatsplitter von seinem Herzen fernhält. Diese Vergiftung zwingt ihn sogar zeitweilig, die Iron-Man-Rüstung abzulegen. Sie wird daraufhin von seinem Freund James Rhodes getragen. Rhodes erhält später seine eigene Rüstung mit der Iron-Man-Technologie und wird zum Superhelden namens War Machine, welcher an der Seite von Tony Stark kämpft. Tony kann wieder als Iron Man kämpfen, da er durch seinen toten Vater ein „neues“ Element entdeckt. Dieses ermöglicht es ihm, die Rüstung ohne weitere gesundheitliche Probleme zu tragen.
 
-Musk's political activities, views, and statements have made him a polarizing figure, especially following the COVID-19 pandemic. He has been criticized for making unscientific and misleading statements, including COVID-19 misinformation and promoting conspiracy theories, and affirming antisemitic, racist, and transphobic comments. His acquisition of Twitter was controversial due to a subsequent increase in hate speech and the spread of misinformation on the service. His role in the second Trump administration attracted public backlash, particularly in response to DOGE.
+    Tony Starks fiktives Vermögen wird auf etwa 10[1] bis 50 Milliarden US-Dollar geschätzt. Er zählt damit zu den reichsten fiktiven Figuren der Welt.
     """
 
     summary_template = """
-    given the information {information} about a person I want you to create:
-    1. A short summary
-    2. two interesting facts about them
+    die Informationen {information} zusammenfassen.
+    In 3 Sätzen wiedergeben.
+
     """
-
     summary_prompt_template = PromptTemplate(
-        input_variables=["information"], template=summary_template
+        input_variables=["information"],
+        template=summary_template,
     )
-
-    # llm = ChatOllama(temperature=0, model="gemma3:270m")
-    llm = google_genai.ChatGoogleGenerativeAI(temperature=0, model="gemini_genai")
+    llm = ChatGoogleGenerativeAI(model="google_genai", temperature=0)
     chain = summary_prompt_template | llm
-
-    response = chain.invoke(input={"information": information})
-    print(response.content)
+    response = chain.invoke({"information": information})
+    print(response)
 
 if __name__ == "__main__":
     main()
